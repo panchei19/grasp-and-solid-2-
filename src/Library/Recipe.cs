@@ -6,6 +6,7 @@
 
 using System;
 using System.Collections;
+using System.Text;
 
 namespace Full_GRASP_And_SOLID.Library
 {
@@ -25,14 +26,36 @@ namespace Full_GRASP_And_SOLID.Library
             this.steps.Remove(step);
         }
 
-        public void PrintRecipe()
+        //expert (clase maestra es recipe ya que implemeta product y step quien implementa equipment)
+        public double GetProductionCost()
         {
-            Console.WriteLine($"Receta de {this.FinalProduct.Description}:");
-            foreach (Step step in this.steps)
+          Double costoInsumos = 0;
+          Double costoEquipment = 0;
+          Double total = 0;
+          foreach(Step step in this.steps) 
+          {
+            costoInsumos = costoInsumos + step.Input.UnitCost;
+            costoEquipment = costoEquipment + (step.Equipment.HourlyCost * (step.Time/60));
+          }
+          total = costoEquipment + costoInsumos;
+
+          return total;
+        }
+        public string GetRecipeText()
+        {
+            StringBuilder text = new StringBuilder($"Receta de: {this.FinalProduct.Description}\n");
+            foreach (Step step in AllSteps())
             {
-                Console.WriteLine($"{step.Quantity} de '{step.Input.Description}' " +
-                    $"usando '{step.Equipment.Description}' durante {step.Time}");
+               text.Append($"paso : {step}\n");
             }
+            return Convert.ToString(text);
+        }
+        public string GetSteps(){
+            ArrayList AllSteps = new ArrayList();
+            foreach(Recipe Steps in this.steps){
+                AllSteps.Add(Steps);
+            }
+            return Convert.ToString(AllSteps);
         }
     }
 }
